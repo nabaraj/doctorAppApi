@@ -1,0 +1,36 @@
+GET http://localhost:3000/
+
+##### login call
+POST http://localhost:3000/doctor/login
+Content-Type: application/json
+
+{
+	"userName":"nabaraj",
+	"password":"admin123"
+}
+
+##### registration call
+POST http://localhost:3000/doctor/registration
+Content-Type: application/json
+
+{
+	"userName": "nabaraj",
+	"name":"Nabaraj Saha",
+	"password":"admin123",
+	"email":"navaraj2k@gmail.com",
+	"department":"Medicine",
+	"dob":null,
+	"specialization":"medicine",
+	"phone":""
+}
+##### get all posts
+GET http://localhost:3000/posts
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6Im5hYmFyYWoiLCJpYXQiOjE2MDE4OTcyODIsImV4cCI6MTYwMTg5OTA4Mn0.HqC49M7AafE6ILK8bBALJrhwygai5toMxIwGJlhVw1Q
+
+### add patient
+
+POST http://localhost:3000/patient/entry
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6Im5hYmFyYWoiLCJpYXQiOjE2MDE4OTcyODIsImV4cCI6MTYwMTg5OTA4Mn0.HqC49M7AafE6ILK8bBALJrhwygai5toMxIwGJlhVw1Q
+
+{"firstName":"abc"}
