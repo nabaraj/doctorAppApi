@@ -1,7 +1,7 @@
 GET http://localhost:3000/
 
 ##### login call
-POST http://localhost:3000/doctor/login
+POST https://radiant-beach-09897.herokuapp.com/doctor/login
 Content-Type: application/json
 
 {
@@ -10,7 +10,7 @@ Content-Type: application/json
 }
 
 ##### registration call
-POST http://localhost:3000/doctor/registration
+POST https://radiant-beach-09897.herokuapp.com/doctor/registration
 Content-Type: application/json
 
 {
@@ -24,8 +24,8 @@ Content-Type: application/json
 	"phone":""
 }
 ##### get all posts
-GET http://localhost:3000/posts
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6Im5hYmFyYWoiLCJpYXQiOjE2MDE4OTcyODIsImV4cCI6MTYwMTg5OTA4Mn0.HqC49M7AafE6ILK8bBALJrhwygai5toMxIwGJlhVw1Q
+GET https://radiant-beach-09897.herokuapp.com/posts
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6Im5hYmFyYWoiLCJpYXQiOjE2MDIwNjUzNjIsImV4cCI6MTYwMjA2NzE2Mn0.Mcz8lSgGFeGI2UYX91xlXsyimhWN-HpN-37Ip_8GtqI
 
 ### add patient
 
