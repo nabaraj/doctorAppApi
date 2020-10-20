@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 // var authorization = 
 let {authorization} = require('./../utils/utility');
+const { Doctor } = require("../models/doctor_model");
 const posts = [{
   userName:'nabaraj',
   title:'book1'
@@ -17,6 +18,24 @@ const posts = [{
 router.get('/', function(req, res, next) {
   // res.render('index', { title: 'Express' });
   res.send({test:'index'})
+});
+router.get('/profile', authorization, function(req, res, next) {
+  // res.render('index', { title: 'Express' });
+  
+
+    let userName = req.user.userName
+    console.log("$$$###%%% ",userName);
+    Doctor.findOne({
+      userName: userName
+    },(err, userProfile)=>{
+      if(err){
+        res.status(404).send('profile not found');
+      }else{
+        res.status(200).json(userProfile);
+      }
+    });
+    
+  // res.send({test:'index'})
 });
 router.get('/posts', authorization, function(req, res, next) {
   // res.render('index', { title: 'Express' });

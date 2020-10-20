@@ -16,7 +16,8 @@ const mongoose = require("mongoose");
 
 router.post("/registration", async (req, res) => {
   let user = await Doctor.findOne({
-    email: req.body.email
+    email: req.body.email,
+    userName: req.body.userName
   });
   if (user) return res.status(400).send("Doctor's entry already exists");
   else
@@ -29,7 +30,9 @@ router.post("/registration", async (req, res) => {
       dob:req.body.dob || new Date(),
       specialization:req.body.specialization,
       token:'',
-      phone:req.body.phone
+      phone:req.body.phone,
+      roles:req.body.roles,
+      initials:req.body.initials
     });
   const salt = await bcrypt.genSalt(3);
   console.log("salt", salt);
@@ -54,13 +57,7 @@ router.post('/login', async(req, res)=>{
     console.log('if');
     const match = await bcrypt.compare(req.body.password, user.password);
       console.log('isMatch ',match);
-      // if (err) {
-      //   res.send(err)
-      // } else if (!isMatch) {
-      //   res.send("Password doesn't match!")
-      // } else {
-      //   res.status(200).send("Password matches!")
-      // }
+      
 
       if(match){
         let userObj = {userName:req.body.userName};
@@ -69,18 +66,19 @@ router.post('/login', async(req, res)=>{
        let filter= {_id:user._id};
        const update = {'token':token};
 
-      await Doctor.findOneAndUpdate(filter, update)
+       let userData = await Doctor.update(filter, update)
         // jwt.sign({ email: req.body.email }, function(err, token) {
-          console.log(token);
+          console.log("userData ",userData);
         // });
-        await user.save();
-        res.status(200).json(user);
+        // await user.save();
+        let updatedUser = await Doctor.findOne(filter)
+        res.status(200).json(updatedUser);
       }else{
-        res.send("Password doesn't match!")
+        res.status(404).send("Password doesn't match!")
       }
   }
   else{
-    res.send('email password not match');
+    res.status(404).send('email password not match');
   }
 })
 module.exports = router;

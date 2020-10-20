@@ -1,8 +1,9 @@
 var jwt = require('jsonwebtoken');
 require("dotenv").config();
+const log = console.log;
 function generateAccessToken(username) {
   // expires after half and hour (1800 seconds = 30 minutes)
-  return jwt.sign(username, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1800s' });
+  return jwt.sign(username, process.env.ACCESS_TOKEN_SECRET);
 }
 
 function authorization(req, res, next){
@@ -21,7 +22,9 @@ function authorization(req, res, next){
   })
   // next();
 }
+
 module.exports={
   generateAccessToken,
-  authorization
+  authorization,
+  log
 }

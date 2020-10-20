@@ -17,7 +17,7 @@ var patientSchema = new mongoose.Schema({
     type: Date
   },
   phone:{
-    type: Array
+    type: String
   },
   nationality:{
     type: String
@@ -33,12 +33,15 @@ var patientSchema = new mongoose.Schema({
   },
   height:{
     type: String
+  },
+  patientId:{
+    type: Number
   }
 });
 const Patient = mongoose.model(
-  "User",
+  "PatientDetails",
   patientSchema,
   "patient_details"
 );
 
-exports.Patient = Patient;
+exports.PatientModel = Patient;

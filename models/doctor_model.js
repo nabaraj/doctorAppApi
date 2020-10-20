@@ -39,6 +39,10 @@ var doctorSchema = new mongoose.Schema({
   },
   token: {
     type:String
+  },
+  roles:{
+    type:String,
+    required: true
   }
 });
 const Doctor = mongoose.model(
