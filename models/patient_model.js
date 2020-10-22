@@ -13,6 +13,9 @@ var patientSchema = new mongoose.Schema({
   email: {
     type: String
   },
+  gender:{
+    type: String
+  },
   dob:{
     type: Date
   },
@@ -35,7 +38,10 @@ var patientSchema = new mongoose.Schema({
     type: String
   },
   patientId:{
-    type: Number
+    type: String
+  },
+  lastVisit:{
+    type: String
   }
 });
 const Patient = mongoose.model(

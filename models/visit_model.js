@@ -7,18 +7,15 @@ var visitSchema = new mongoose.Schema({
   doctorId: {
     type: Number
   },
-  visitId:{
-    type: Number
-  },
   dateArr:{
     type:Array
   }
 });
 
-const Visit = mongoose.model(
-  "VisitModel",
+module.exports = mongoose.model(
+  "visit_details",
   visitSchema,
   "visit_details"
 );
 
-exports.VisitModel = Visit;
+// exports.VisitModel = Visit;
