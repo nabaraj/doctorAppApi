@@ -13,10 +13,14 @@ var prescriptionSchema = new mongoose.Schema({
     type:String
   },
   patientId:{
-    type:Number,
+    type:String,
     required:true
   },
   doctorId:{
+    type:String,
+    required:true
+  },
+  pc:{
     type:String
   }
 

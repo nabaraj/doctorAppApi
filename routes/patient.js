@@ -31,7 +31,7 @@ router.post("/registration", authorization, async (req, res) => {
       image: req.body.image,
       height: req.body.height,
       patientId: Date.now(),
-      lastVisit:''
+      lastVisit: "",
     });
   }
   // user = new PatientModle({
@@ -47,47 +47,49 @@ router.post("/registration", authorization, async (req, res) => {
   // res.send({...user});
 });
 
-router.get("/search/:page",authorization, async (req, res) => {
+router.get("/search/:page", authorization, async (req, res) => {
   // let idPart = isNaN(parseInt(req.query.searchStr))?00:p
   console.log("search page");
   const resultsPerPage = req.query.pageSize ? parseInt(req.query.pageSize) : 2;
   const page = req.params.page >= 1 ? req.params.page : 1;
   const query = req.query.searchStr;
-  let currentPage = page-1;
+  let currentPage = page - 1;
 
   let searchQuery = parseInt(req.query.searchStr);
-  searchQuery = isNaN(searchQuery)? 00 : searchQuery;
+  searchQuery = isNaN(searchQuery) ? 00 : searchQuery;
 
-  console.log(chalk.white.bgGray(searchQuery))
+  console.log(chalk.white.bgGray(searchQuery));
 
   PatientModel.find({
-      $or: [
-        {
-          firstName: {
-            $regex: query,
-            $options: "ig",
-          }},
-         { lastName: {
-            $regex: query,
-            $options: "ig",
-          }
-        }
-      ],
-    
+    $or: [
+      {
+        firstName: {
+          $regex: query,
+          $options: "ig",
+        },
+      },
+      {
+        lastName: {
+          $regex: query,
+          $options: "ig",
+        },
+      },
+    ],
   })
-  .limit(resultsPerPage)
-  .skip(resultsPerPage * currentPage)
-  .then((results) => {
-    let hideNextLink = results.length === 0 || results.length < resultsPerPage
-    let resObject = {
-      nextLink:hideNextLink ? "": 'patient/search/'+(parseInt(page)+1),
-      results:results
-    }
-    return res.status(200).send(resObject);
-  })
-  .catch((err) => {
-    return res.status(500).send(err.message);
-  });
+    .limit(resultsPerPage)
+    .skip(resultsPerPage * currentPage)
+    .then((results) => {
+      let hideNextLink =
+        results.length === 0 || results.length < resultsPerPage;
+      let resObject = {
+        nextLink: hideNextLink ? "" : "patient/search/" + (parseInt(page) + 1),
+        results: results,
+      };
+      return res.status(200).send(resObject);
+    })
+    .catch((err) => {
+      return res.status(500).send(err.message);
+    });
 });
 
 router.get("/details", authorization, async (req, res) => {
@@ -126,53 +128,41 @@ router.post("/history", authorization, async (req, res) => {
     res.send(visit);
   });
 });
-router.post("/prescription",authorization, async (req, res) => {
+router.post("/prescription", authorization, async (req, res) => {
   let pres = new prescriptionModel({
+    doctorId: req.body.doctorId,
     patientId: req.body.patientId,
-    doctorId: req.body.doctorId,
-    testReq: req.body.testReq,
-    symptoms: req.body.symptoms,
-    medication: req.body.medication,
+    pc: req.body.prescriptionContent,
     date: req.body.date,
   });
   // pres.dateArr.push(Date.now());
-  pres.save((err, response) => {
-    if (err) {
-      res.send(err);
-    }
-    res.send(response);
-  });
+  let presData = await pres.save();
+  if (!presData) res.status(404).send("Not found prescription");
+  let filter = { _id: req.body.patientId };
+  const update = { lastVisit: req.body.date };
+
+  //  let userData = await Doctor.update(filter, update)
+  let updateDate = await PatientModel.update(filter, update);
+  if (!updateDate) res.status(404).send("Not found patient");
+  let getPatient = await PatientModel.find(filter);
+  res.send({ presData, getPatient });
 });
-router.put("/prescription",authorization, async (req, res) => {
-  prescriptionModel.findByIdAndUpdate(req.body.id,{
-    doctorId: req.body.doctorId,
-    testReq: req.body.testReq,
-    symptoms: req.body.symptoms,
-    medication: req.body.medication,
-    date: req.body.date,
-  }, function(err, response){
-    if (err){ 
-      console.log(err) 
-      res.status(404).send(err)
-  } 
-  else{ 
-      console.log("Updated User : ", response); 
-      // res.send(response);
-      prescriptionModel.findById(req.body.id, function(err, result){
-        if(err){
-          res.status(404).send('not found record')
-        }
-        res.send(result)
-      })
-  } 
-  });
-  // let pres = new prescriptionModel();
-  // pres.dateArr.push(Date.now());
-  // pres.save((err, response) => {
-  //   if (err) {
-  //     res.send(err);
-  //   }
-  //   res.send(response);
-  // });
+
+router.put("/prescription", authorization, async (req, res) => {
+  let filter = { _id: req.body.id };
+  let update = { pc: req.body.prescriptionContent };
+  let presResult = await prescriptionModel.update(filter, update);
+  if(!presResult) res.status(404).send("Not able to update");
+  presResult = await prescriptionModel.find(filter);
+
+  filter = { _id: req.body.patientId };
+  update = { lastVisit: req.body.date };
+
+  let updateDate = await PatientModel.update(filter, update);
+  if (!updateDate) res.status(404).send("Not found patient");
+  let getPatient = await PatientModel.find(filter);
+console.log("####@@@@$$$$ ",{presResult, getPatient})
+    res.send({presResult, getPatient});
+    
 });
 module.exports = router;
