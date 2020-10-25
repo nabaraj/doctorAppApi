@@ -31,6 +31,7 @@ router.post("/registration", authorization, async (req, res) => {
       image: req.body.image,
       height: req.body.height,
       patientId: Date.now(),
+      lastVisit:''
     });
   }
   // user = new PatientModle({

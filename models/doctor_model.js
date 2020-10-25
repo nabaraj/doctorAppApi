@@ -26,16 +26,28 @@ var doctorSchema = new mongoose.Schema({
     maxlength: 999
   },
   department: {
-    type: String
+    type: String,
+    required: true,
+    minlength: 5,
+    maxlength: 999
   },
   specialization:{
-    type: String
+    type: String,
+    required: true,
+    minlength: 5,
+    maxlength: 999
   },
   phone:{
-    type: String
+    type: String,
+    required: true,
+    minlength: 5,
+    maxlength: 999
   },
   dob:{
-    type: Date
+    type: Date,
+    required: true,
+    minlength: 5,
+    maxlength: 999
   },
   token: {
     type:String
