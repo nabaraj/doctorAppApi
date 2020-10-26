@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const chalk = require("chalk");
+const mongoose = require("mongoose");
 
 var { PatientModel } = require("./../models/patient_model");
 let VisitModel = require("./../models/visit_model");
@@ -58,7 +59,7 @@ router.get("/search/:page", authorization, async (req, res) => {
   let searchQuery = parseInt(req.query.searchStr);
   searchQuery = isNaN(searchQuery) ? 00 : searchQuery;
 
-  console.log(chalk.white.bgGray(searchQuery));
+  // console.log(chalk.white.bgGray(searchQuery));
 
   PatientModel.find({
     $or: [
@@ -93,7 +94,7 @@ router.get("/search/:page", authorization, async (req, res) => {
 });
 
 router.get("/details", authorization, async (req, res) => {
-  console.log("patientId ", req.query.patientId);
+  // console.log("patientId ", req.query.patientId);
   let user = await PatientModel.findById(req.query.patientId);
   if (!user) {
     res.status(404).send(user);
@@ -109,7 +110,7 @@ router.get("/history", authorization, async (req, res) => {
     },
     (err, result) => {
       if (err) res.send(err);
-      console.log("##### ", result);
+      // console.log("##### ", result);
       res.send(result);
     }
   );
@@ -149,20 +150,21 @@ router.post("/prescription", authorization, async (req, res) => {
 });
 
 router.put("/prescription", authorization, async (req, res) => {
-  let filter = { _id: req.body.id };
+  let filter = "";
   let update = { pc: req.body.prescriptionContent };
-  let presResult = await prescriptionModel.update(filter, update);
-  if(!presResult) res.status(404).send("Not able to update");
-  presResult = await prescriptionModel.find(filter);
+  let id = req.body.id;
+  let presData = await prescriptionModel.findByIdAndUpdate(id, update, {
+    new: true,
+  });
+  if (!presData) res.status(404).send("Not able to update");
+  // presData = await prescriptionModel.find(filter);
 
   filter = { _id: req.body.patientId };
   update = { lastVisit: req.body.date };
 
-  let updateDate = await PatientModel.update(filter, update);
+  let updateDate = await PatientModel.updateOne(filter, update, { new: true });
   if (!updateDate) res.status(404).send("Not found patient");
   let getPatient = await PatientModel.find(filter);
-console.log("####@@@@$$$$ ",{presResult, getPatient})
-    res.send({presResult, getPatient});
-    
+  res.send({ presData, getPatient });
 });
 module.exports = router;
