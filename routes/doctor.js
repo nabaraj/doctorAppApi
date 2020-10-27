@@ -40,16 +40,6 @@ router.post("/registration", async (req, res) => {
   });
 });
 
-router.post("/logout", authorization, async (req, res) => {
-  let userid = req.body.userId;
-  let update = { token: "" };
-  let presData = await Doctor.findOne(userid, update, {
-    new: true,
-  });
-  if (!presData) res.status(404).send("Error in logout");
-  res.send("Logout successful");
-});
-
 router.post("/login", async (req, res) => {
   console.log("#### ", req.body.email, req.body.password);
 
