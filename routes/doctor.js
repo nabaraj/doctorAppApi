@@ -4,12 +4,6 @@ var jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 let { generateAccessToken } = require("../utils/utility");
 let { authorization } = require("./../utils/utility");
-// /* GET users listing. */
-// router.get('/', function(req, res, next) {
-//   res.send('respond with a resource');
-// });
-
-// module.exports = router;
 
 const { Doctor } = require("../models/doctor_model");
 const mongoose = require("mongoose");
@@ -46,6 +40,16 @@ router.post("/registration", async (req, res) => {
   });
 });
 
+router.post("/logout", authorization, async (req, res) => {
+  let userid = req.body.userId;
+  let update = { token: "" };
+  let presData = await Doctor.findOne(userid, update, {
+    new: true,
+  });
+  if (!presData) res.status(404).send("Error in logout");
+  res.send("Logout successful");
+});
+
 router.post("/login", async (req, res) => {
   console.log("#### ", req.body.email, req.body.password);
 
@@ -79,5 +83,25 @@ router.post("/login", async (req, res) => {
   } else {
     res.status(404).send("email password not match");
   }
+});
+router.get("/profile", authorization, function (req, res, next) {
+  // res.render('index', { title: 'Express' });
+
+  let userName = req.user.userName;
+  // console.log("$$$###%%% ", userName);
+  Doctor.findOne(
+    {
+      userName: userName,
+    },
+    (err, userProfile) => {
+      if (err) {
+        res.status(404).send("profile not found");
+      } else {
+        res.status(200).json(userProfile);
+      }
+    }
+  );
+
+  // res.send({test:'index'})
 });
 module.exports = router;
