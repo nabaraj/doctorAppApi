@@ -33,6 +33,7 @@ router.post("/logout", authorization, async (req, res) => {
       new: true,
     },
     (err, result) => {
+      console.log("#### check logout ####");
       if (err) res.status(404).send(err);
       res.send("Logout successful");
     }
