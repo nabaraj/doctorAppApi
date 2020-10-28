@@ -26,11 +26,17 @@ router.get("/", function (req, res, next) {
 router.post("/logout", authorization, async (req, res) => {
   let userid = req.body.userId;
   let update = { token: "" };
-  let presData = await Doctor.findOne(userid, update, {
-    new: true,
-  });
-  if (!presData) res.status(404).send("Error in logout");
-  res.send("Logout successful");
+  Doctor.findOne(
+    userid,
+    update,
+    {
+      new: true,
+    },
+    (err, result) => {
+      if (err) res.status(404).send(err);
+      res.send("Logout successful");
+    }
+  );
 });
 router.get("/profile", authorization, function (req, res, next) {
   // res.render('index', { title: 'Express' });
