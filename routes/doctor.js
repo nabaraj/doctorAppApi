@@ -41,11 +41,17 @@ router.post("/registration", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-  console.log("#### ", req.body.email, req.body.password);
+  console.log("#### ", req.body.userName, req.body.password);
 
-  let user = await Doctor.findOne({
-    userName: req.body.userName,
-  });
+  let user = "";
+  try {
+    user = await Doctor.findOne({
+      userName: req.body.userName,
+    });
+  } catch (e) {
+    console.log("database connectivity fail");
+    res.status(404).send("profile not found");
+  }
   console.log("####$$ ", user);
   if (user) {
     // return res.status(200).send("Login Successfull");
